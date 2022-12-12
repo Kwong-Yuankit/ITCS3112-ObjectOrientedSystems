@@ -10,7 +10,7 @@ public class Main {
         double budget = 0;
         double balance = 0;
         String expenseName;
-        double expenseAmount;
+        double expenseAmount = 0;
         String expenseCategory;
         String note;
         int quantity = 0;
@@ -29,16 +29,12 @@ public class Main {
         System.out.println("Please Enter Your Name:");
         userName = scan.nextLine();
 
+
         //Ask For Budget
         System.out.println("Please Enter Your Budget:");
-        budget = scan.nextDouble();
+        budget = getUserBudget();
+        balance = budget;
 
-        //check if budget is valid number
-        while (budget <= 0) {
-            System.out.println("Please Enter a Valid Budget:");
-            budget = scan.nextDouble();
-            balance = budget * 1;
-        }
 
         //Create User
         User user = new User(userName);
@@ -46,22 +42,28 @@ public class Main {
         System.out.println("Welcome " + user.getUserName() + "! Your budget is $" + list.getBudget());
 
 
-
-
         //do while loop to run a switch statement
         try {
             do {
-                scan.nextLine();
                 //Show Menu
                 showMenu();
-                //Ask for choice
+
+                //Prompt for choice
                 System.out.println("Please Enter Your Choice (1-8):");
-                choice = scan.nextInt();
-                //validate choice
-                while (choice < 1 || choice > 8) {
-                    System.out.println("Please Enter a Valid Choice (1-8):");
+
+                //get user choice
+                try {
                     choice = scan.nextInt();
+                    while (choice < 1 || choice > 8) {
+                        System.out.println("Please Enter a Valid Choice (1-8):");
+                        choice = scan.nextInt();
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Please Enter a Valid Choice (1-8):");
+                    scan.nextLine();
                 }
+
+
                 switch(choice) {
                     case 1: //Add Expense
                         scan.nextLine();
@@ -73,20 +75,40 @@ public class Main {
                         expenseCategory = scan.nextLine();
                         System.out.println("(optional) Enter Note:");
                         note = scan.nextLine();
+
+
+                        //Get Expense Cost
                         System.out.println("Enter Expense Cost:");
-                        expenseAmount = scan.nextDouble();
-                        //validate expense amount
-                        while (expenseAmount <= 0) {
-                            System.out.println("Cannot have an amount less than 0. Please Enter a Valid Expense Cost:");
-                            expenseAmount = scan.nextDouble();
-                        }
+                        expenseAmount = 0; //reset expense amount
+                        do {
+                            try {
+                                expenseAmount = scan.nextDouble();
+                                while (expenseAmount <= 0) {
+                                    System.out.println("Please Enter a Valid Expense Cost:");
+                                    expenseAmount = scan.nextDouble();
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("Please Enter a Valid Expense Cost:");
+                                scan.nextLine();
+                            }
+                        } while (expenseAmount <= 0);
+
+
+                        //Get Expense Quantity
+                        quantity = 0; //reset quantity
                         System.out.println("Enter the Number of Times You Made This Expense:");
-                        quantity = scan.nextInt();
-                        //validate quantity
-                        while (quantity <= 0) {
-                            System.out.println("Cannot have a quantity less than 0. Please Enter a Valid Quantity:");
-                            quantity = scan.nextInt();
-                        }
+                        do {
+                            try {
+                                quantity = scan.nextInt();
+                                while (quantity <= 0) {
+                                    System.out.println("Please Enter a Valid Quantity:");
+                                    quantity = scan.nextInt();
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("Please Enter a Valid Quantity:");
+                                scan.nextLine();
+                            }
+                        } while (quantity <= 0);
 
 
                         //Create Expense
@@ -115,6 +137,9 @@ public class Main {
                         System.out.println("\t View Category");
                         System.out.println("----------------------------");
                         System.out.println("Enter the category you want to view:");
+                        //call getCategoryNames method
+                        System.out.println(list.getCategoryNames());
+
                         scan.nextLine();
                         String categoryName = scan.nextLine();
                         list.printCategoryItems(categoryName);
@@ -131,12 +156,21 @@ public class Main {
                         System.out.println("----------------------------");
                         System.out.println("Your current budget is: $" + list.getBudget());
                         System.out.println("Enter the amount you want to add to your budget:");
-                        double addBudget = scan.nextDouble();
-                        //validate addBudget
-                        while (addBudget <= 0) {
-                            System.out.println("Cannot have an amount less than 0.\nPlease Enter a Valid Amount:");
-                            addBudget = scan.nextDouble();
-                        }
+                        double addBudget = 0;
+                        do {
+                            try {
+                                addBudget = scan.nextDouble();
+                                while (addBudget <= 0) {
+                                    System.out.println("Please Enter a Valid Budget Amount:");
+                                    addBudget = scan.nextDouble();
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("Please Enter a Valid Budget Amount:");
+                                scan.nextLine();
+                            }
+                        }while (addBudget <= 0);
+
+                        //add additional budget to current budget
                         list.setBudget(list.getBudget() + addBudget);
                         System.out.println("Your new budget is $" + list.getBudget());
                         break;
@@ -151,13 +185,8 @@ public class Main {
                             System.out.println("Please Enter Your Name:");
                             userName = scan.nextLine();
                             System.out.println("Please Enter Your Budget:");
-                            budget = scan.nextDouble();
-                            //check if budget is valid number
-                            while (budget <= 0) {
-                                System.out.println("Please Enter a Valid Budget:");
-                                budget = scan.nextDouble();
-                                balance = budget * 1;
-                            }
+                            budget = getUserBudget();
+                            balance = budget;
                             //Create User
                             user = new User(userName);
                             list = new ExpenseList(userName, budget, balance);
@@ -200,5 +229,23 @@ public class Main {
         } catch(Exception e) {
             System.out.println("Error caught while running EnterToContinue(). \n" + e);
         }
+    }
+
+    //get budget amount
+    public static double getUserBudget() {
+        Scanner scan = new Scanner(System.in);
+        double budget = 0;
+        do {
+            try {
+                budget = scan.nextDouble();
+                if (budget <= 0) {
+                    System.out.println("Please enter a positive number");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter a positive number:");
+                scan.next();
+            }
+        } while (budget <= 0);
+        return budget;
     }
 } //end class

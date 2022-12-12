@@ -45,14 +45,20 @@ public class ExpenseList {
     }
 
     public void removeExpense(String expenseName) {
+        boolean found = false;
         if(expenseList.size() == 0) {
             System.out.println("Expense list is empty");
         } else {
             for(int i = 0; i < expenseList.size(); i++) {
                 if(expenseList.get(i).getExpenseName().equals(expenseName)) {
                     expenseList.remove(i);
+                    System.out.println(expenseName + " has been removed");
+                    found = true;
                 }
             }
+        }
+        if (found == false) {
+            System.out.println("Expense not found");
         }
     }
 
@@ -85,6 +91,10 @@ public class ExpenseList {
             System.out.println("----------------------------------------");
             System.out.println("Total Spent: $" + getTotalExpenseCost());
             System.out.println("Remaining Balance: $" + (budget - getTotalExpenseCost()));
+            //check if over budget
+            if (getTotalExpenseCost() > budget) {
+                System.out.println("\nYou are over budget by $" + (getTotalExpenseCost() - budget) + "!");
+            }
         }
     }
 
