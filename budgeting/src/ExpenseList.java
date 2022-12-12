@@ -89,6 +89,7 @@ public class ExpenseList {
                 System.out.println(items.getExpenseName() + " (" + items.getNote() + ") x " + items.getQuantity() + " @ $" + items.getExpenseAmount() + " = $" + (items.getExpenseAmount() * items.getQuantity()));
             }
             System.out.println("----------------------------------------");
+            System.out.println("Budget: " + getBudget());
             System.out.println("Total Spent: $" + getTotalExpenseCost());
             System.out.println("Remaining Balance: $" + (budget - getTotalExpenseCost()));
             //check if over budget
@@ -145,7 +146,7 @@ public class ExpenseList {
             System.out.println("Your Budget: $" + budget);
             System.out.println("Total Spent: $" + getTotalExpenseCost());
             System.out.println("Remaining Balance: $" + (budget - getTotalExpenseCost()));
-            System.out.println("Percentage of Budget Spent: " + Math.round(getTotalExpenseCost() / budget * 100) + "%");
+            System.out.println("Percentage of Budget Spent: " + Math.round(getTotalExpenseCost() / budget * 100) + "% of spent amount");
             System.out.println("");
 
 
